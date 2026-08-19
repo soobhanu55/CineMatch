@@ -1,12 +1,22 @@
+import os
+
 import streamlit as st
 import pickle
 import pandas as pd
 import requests
 
+TMDB_API_KEY = os.environ.get("TMDB_API_KEY")
+
 def fetch_poster(movie_id):
-    response = requests.get('https://api.themoviedb.org/3/movie/{}?api_key=dcabf63648fd1bb5f815b0033b20d652&language=en-US'.format(movie_id))
+    if not TMDB_API_KEY:
+        return None
+    response = requests.get(
+        f"https://api.themoviedb.org/3/movie/{movie_id}",
+        params={"api_key": TMDB_API_KEY, "language": "en-US"},
+    )
     data = response.json()
-    return "https://image.tmdb.org/t/p/w500/" + data['poster_path']
+    poster_path = data.get("poster_path")
+    return f"https://image.tmdb.org/t/p/w500/{poster_path}" if poster_path else None
 def recommend(movie):
   movie_index = movies[movies['title']==movie].index[0]
   distances = similarity[movie_index]
@@ -27,6 +37,8 @@ movies = pd.DataFrame(movies_dict)
 similarity = pickle.load(open('similarity.pkl','rb'))
 
 st.title('Movie Recommender System')
+if not TMDB_API_KEY:
+    st.info("Set the TMDB_API_KEY environment variable to show posters (recommendations still work without it).")
 
 
 selected_movie_name = st.selectbox(
@@ -36,18 +48,8 @@ selected_movie_name = st.selectbox(
 if st.button('Recommend'):
     names,posters = recommend(selected_movie_name)
     col1,col2,col3,col4,col5 = st.columns(5)
-    with col1:
-        st.text(names[0])
-        st.image(posters[0])
-    with col2:
-        st.text(names[1])
-        st.image(posters[1])
-    with col3:
-        st.text(names[2])
-        st.image(posters[2])
-    with col4:
-        st.text(names[3])
-        st.image(posters[3])
-    with col5:
-        st.text(names[4])
-        st.image(posters[4])
+    for col, name, poster in zip((col1, col2, col3, col4, col5), names, posters):
+        with col:
+            st.text(name)
+            if poster:
+                st.image(poster)
