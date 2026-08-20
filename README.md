@@ -26,6 +26,16 @@ CineMatch is a content-based recommendation engine that suggests movies to users
 ## 📁 Dataset
 This project uses the [TMDB 5000 Movies Dataset](https://www.kaggle.com/datasets/tmdb/tmdb-movie-metadata), which includes information on budget, genres, popularity, and credits for nearly 5,000 films. The raw CSVs ship zipped in `archive.zip`.
 
+## Demo
+
+The real Streamlit app (`app.py`), driven end to end — select a movie, click Recommend, get real results:
+
+![UI walkthrough of the recommender](docs/demo_ui.gif)
+
+Terminal recording of the real evaluation run:
+
+![Terminal recording of the evaluation](docs/demo.gif)
+
 ## 📊 Evaluation
 
 `build_and_eval.py` reproduces the notebook's exact pipeline end-to-end (merge, genre/keyword/top-3-cast/director extraction, Porter stemming, `CountVectorizer(max_features=5000, stop_words='english')`, cosine similarity) against a hand-labeled ground truth of 10 movies with real, verified franchise/sequel relationships (not guessed — actual same-series films):
