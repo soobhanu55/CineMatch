@@ -1,4 +1,4 @@
-# Content-Based Movie Recommendation System
+# Content-Based Movie Recommendation System 
 
 ## Project Overview
 CineMatch is a content-based recommendation engine that suggests movies to users based on the similarity of their attributes. By analyzing metadata such as genres, keywords, cast, and crew, the system identifies patterns and recommends films that align with a user's specific interests.
